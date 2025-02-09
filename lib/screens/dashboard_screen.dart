@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend_laravel/pages/expenditure_page.dart';
+import 'package:frontend_laravel/pages/setting_page.dart';
 import 'package:frontend_laravel/pages/home_page.dart';
 import 'package:frontend_laravel/pages/profile_page.dart';
 import 'package:frontend_laravel/pages/shopping_page.dart';
@@ -18,14 +18,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Widget> _page = [
     HomePage(),
     ShoppingPage(),
-    ExpenditurePage(),
+    SettingsPage(),
     ProfilePage()
   ];
 
   final List<Widget> _navigationItems = [
     Icon(Icons.home),
     Icon(Icons.shopping_cart),
-    Icon(Icons.exit_to_app),
+    Icon(Icons.settings),
     Icon(Icons.person)
   ];
 

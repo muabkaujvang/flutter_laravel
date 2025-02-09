@@ -12,11 +12,56 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('profile'),
-        backgroundColor: Colors.blue,
+      backgroundColor: Colors.blue,
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Profile picture
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: AssetImage('assets/profile.jpg'), // Add your image here
+            ),
+            SizedBox(height: 20),
+            // Name
+            Text(
+              'John Doe', // Replace with dynamic user name
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            // Email
+            Text(
+              'johndoe@example.com', // Replace with dynamic email
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[700],
+              ),
+            ),
+            SizedBox(height: 20),
+            // Bio
+            Text(
+              'This is a short bio of the user. It can be updated in the settings.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 40),
+            // Edit button
+            ElevatedButton(
+              onPressed: () {
+                // Handle edit profile action here
+              },
+              child: Text('Edit Profile'),
+            ),
+          ],
+        ),
       ),
-      drawer: AppDrawer(),
     );
   }
 }

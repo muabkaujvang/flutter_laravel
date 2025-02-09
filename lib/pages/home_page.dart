@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_laravel/pages/shopping/order_history.dart';
+import 'package:frontend_laravel/pages/shopping/order_shopping.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,12 +40,59 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black),
                     ),
                   ),
+                  SizedBox(width: 50),
                   Padding(
                     padding: EdgeInsets.only(left: 150, top: 15),
-                    child: Icon(
-                      Icons.card_travel,
+                    child: IconButton(
+                      icon: Icon(Icons.card_travel),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderShopping(cartItems: [],),
+                          ),
+                        );
+                      },
                     ),
-                  )
+                  ),
+                  //  SizedBox(width: 10),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, top: 15),
+                    child: IconButton(
+                      icon: Icon(Icons.shopping_cart),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderShopping(cartItems: [],),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                  padding: const EdgeInsets.only(top: 15, right: 10),
+                  child: PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == "history") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderHistoryPage(
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.more_vert),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: "history",
+                        child: Text("Order History"),
+                      ),
+                    ],
+                  ),
+                ),
                 ],
               ),
             ),
@@ -85,21 +134,18 @@ class _HomePageState extends State<HomePage> {
               itemCount: 8,
               itemBuilder: (context, index) {
                 final categories = [
-                  'Electronic',
-                  'Food & Drink',
-                  'Accessories',
-                  'Beauty',
-                  'Furniture',
-                  'Fashion',
-                  'Health',
-                  'Stationery'
+                  'Keyboard',
+                  'Mouse',
+                  'CPU',
+                  'RAM',
+                  'Monitors',
+                  'Speakers',
+                  'Headphones',
+                  'Laptops'
                 ];
                 return Column(
                   children: [
-                    CircleAvatar(
-                      radius: 30,
-                      child: Icon(Icons.abc_outlined)
-                    ),
+                    CircleAvatar(radius: 30, child: Icon(Icons.abc_outlined)),
                     SizedBox(height: 5),
                     Text(
                       categories[index],
@@ -156,14 +202,17 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   return Container(
                     width: 150,
-                    margin: EdgeInsets.only(right: 10),
+                    margin: EdgeInsets.only(right: 10, bottom: 10),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween, // Add this line
                       children: [
+                        // Product Image
                         Expanded(
                           child: Container(
                             decoration: const BoxDecoration(
@@ -179,8 +228,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
+                        // Product Name
                         const Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Text(
                             'Product Name',
                             style: TextStyle(fontSize: 14),
@@ -188,6 +238,7 @@ class _HomePageState extends State<HomePage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        // Product Price
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
@@ -199,12 +250,31 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
+                        // Add to Cart Button at the bottom
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Implement cart functionality here
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Product added to your cart!'),
+                                ),
+                              );
+                            },
+                            child: Text('Add to Cart'),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(double.infinity,
+                                  40), // Ensure the button is stretched
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );
                 },
               ),
-            ),
+            )
           ],
         ),
       ),
