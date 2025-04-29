@@ -1,5 +1,5 @@
 class ApiPath {
-     static String BASE_Url = 'http://192.168.251.246:8000/api/';
+     static String BASE_Url = 'https://meng-production.up.railway.app/api/';
      static String BASE_IMAGE = BASE_Url+'images/';
      static String LOGIN = BASE_Url+"users/login";
     static String REGISTER_Url = BASE_Url+"users/register";

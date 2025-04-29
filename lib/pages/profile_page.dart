@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
             // Profile picture
             CircleAvatar(
               radius: 60,
-              backgroundImage: AssetImage('assets/profile.jpg'), // Add your image here
+              backgroundImage: NetworkImage('https://wallpapersok.com/images/thumbnail/sad-anime-character-filled-with-loneliness-and-despair-v48r8am3qnh1y55u.webp'), // Add your image here
             ),
             SizedBox(height: 20),
             // Name

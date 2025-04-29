@@ -17,12 +17,14 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
-  String selectedCategory = 'Keyboards';
-  List products = [];
+  String selectedCategory = 'All';
+  List<ProductModel> productList = [];
+  List<ProductModel> productListState = []; // New list for filtered products
   bool isLoading = true;
 
   // Dynamically populated categories
   final List<String> categories = [
+    'All',
     'Keyboards',
     'Mouse',
     'Monitors',
@@ -33,19 +35,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
     'Accessories'
   ];
 
-  // Mock product data for multiple categories
-  final Map<String, List<Map<String, dynamic>>> mockProducts = {};
-
   List<CartItem> cartItems = [];
-  List<ProductModel> productList = [];
 
   @override
   void initState() {
     super.initState();
-    fetchProducts(selectedCategory);
+    fetchProducts();
   }
 
-  Future<void> fetchProducts(String category) async {
+  Future<void> fetchProducts() async {
     setState(() {
       isLoading = true;
     });
@@ -55,27 +53,44 @@ class _ShoppingPageState extends State<ShoppingPage> {
       'Cookie': '',
     };
     var request = http.Request('GET', Uri.parse(ApiPath.getProduct));
-    request.body = '''''';
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      //print(await response.stream.bytesToString());
       var data = await response.stream.bytesToString();
+      var products = productModelFromJson(data);
 
       setState(() {
-        productList = productModelFromJson(data);
+        productList = products;
+        productListState = List.from(products); // Set initial state for filtering
       });
-      log('in susseccss = $productList ');
+
+      log('Fetch success: $productList');
     } else {
-      print(response.reasonPhrase);
-      log('in errpr');
+      log('Fetch error: ${response.reasonPhrase}');
     }
 
     setState(() {
-      products = mockProducts[category] ?? [];
       isLoading = false;
+    });
+
+    onFilterProduct(); // Apply filter after fetching data
+  }
+
+  void onFilterProduct() {
+    List<ProductModel> filteredList = [];
+
+    if (selectedCategory == 'All') {
+      filteredList = List.from(productList); // Show all products
+    } else {
+      filteredList = productList
+          .where((product) => product.category == selectedCategory)
+          .toList();
+    }
+
+    setState(() {
+      productListState = filteredList;
     });
   }
 
@@ -83,16 +98,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
     setState(() {
       selectedCategory = category;
     });
-    fetchProducts(category);
+    onFilterProduct();
   }
 
   void onAddToCart(CartItem product) {
-    // var item = CartItem(
-    //     id: product.id.toString(),
-    //     title: product.name.toString(),
-    //     imageUrl: product.imageUrl.toString(),
-    //     price: double.parse(product.price!),
-    //     quantity: 1,);
     setState(() {
       cartItems.add(product);
     });
@@ -160,8 +169,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OrderHistoryPage(
-                            ),
+                            builder: (context) => OrderHistoryPage(),
                           ),
                         );
                       }
@@ -189,12 +197,14 @@ class _ShoppingPageState extends State<ShoppingPage> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: ElevatedButton(
-                      onPressed: () => onCategorySelected(category),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedCategory == category
                             ? Colors.blueAccent
                             : Colors.grey,
                       ),
+                      onPressed: () {
+                        onCategorySelected(category);
+                      },
                       child: Text(category),
                     ),
                   );
@@ -202,11 +212,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
               ),
             ),
           ),
+          
           // Body Content
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : productList.isEmpty
+                : productListState.isEmpty
                     ? const Center(child: Text('No products found.'))
                     : GridView.builder(
                         padding: const EdgeInsets.all(10),
@@ -217,9 +228,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
                         ),
-                        itemCount: productList.length,
+                        itemCount: productListState.length,
                         itemBuilder: (context, index) {
-                          final product = productList[index];
+                          final product = productListState[index];
                           var item = CartItem(
                             id: product.id.toString(),
                             title: product.name.toString(),
